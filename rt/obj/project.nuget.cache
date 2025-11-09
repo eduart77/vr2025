@@ -1,13 +1,13 @@
 {
   "version": 2,
-  "dgSpecHash": "ojQS0NwNbeA=",
+  "dgSpecHash": "Lz5uEhIEHaE=",
   "success": true,
-  "projectFilePath": "D:\\ubb-vr2025\\vr2025\\rt\\rt.csproj",
+  "projectFilePath": "C:\\Users\\diana.odagiu\\vr2025\\rt\\rt.csproj",
   "expectedPackageFiles": [
-    "C:\\Users\\User\\.nuget\\packages\\microsoft.win32.systemevents\\8.0.0-rc.2.23479.6\\microsoft.win32.systemevents.8.0.0-rc.2.23479.6.nupkg.sha512",
-    "C:\\Users\\User\\.nuget\\packages\\skiasharp\\3.119.1\\skiasharp.3.119.1.nupkg.sha512",
-    "C:\\Users\\User\\.nuget\\packages\\skiasharp.nativeassets.macos\\3.119.1\\skiasharp.nativeassets.macos.3.119.1.nupkg.sha512",
-    "C:\\Users\\User\\.nuget\\packages\\skiasharp.nativeassets.win32\\3.119.1\\skiasharp.nativeassets.win32.3.119.1.nupkg.sha512"
+    "C:\\Users\\diana.odagiu\\.nuget\\packages\\microsoft.win32.systemevents\\8.0.0-rc.2.23479.6\\microsoft.win32.systemevents.8.0.0-rc.2.23479.6.nupkg.sha512",
+    "C:\\Users\\diana.odagiu\\.nuget\\packages\\skiasharp\\3.119.1\\skiasharp.3.119.1.nupkg.sha512",
+    "C:\\Users\\diana.odagiu\\.nuget\\packages\\skiasharp.nativeassets.macos\\3.119.1\\skiasharp.nativeassets.macos.3.119.1.nupkg.sha512",
+    "C:\\Users\\diana.odagiu\\.nuget\\packages\\skiasharp.nativeassets.win32\\3.119.1\\skiasharp.nativeassets.win32.3.119.1.nupkg.sha512"
   ],
   "logs": []
 }

@@ -63,9 +63,9 @@ namespace rt
 
             // Go around an approximate middle of the scene and generate frames
             var middle = new Vector(0.0, -5.0, 100.0);
-            var up = new Vector(0, -1, 0).Normalize();
-            var first = new Vector(0, 0, 1).Normalize();
+            var up = new Vector(0, 1, 0).Normalize();
             const double dist = 95.0;
+            //number of frames
             const int n = 90;
             const double step = 360.0 / n;
             
@@ -80,7 +80,9 @@ namespace rt
                     var ca =  Math.Cos(a);
                     var sa =  Math.Sin(a);
             
-                    var dir = first * ca + (up ^ first) * sa + up * (up * first) * (1.0 - ca);
+                    // Rotate around Y-axis: (0, 0, 1) rotated by angle a
+                    // For rotation around Y-axis: x = sin(a), y = 0, z = cos(a)
+                    var dir = new Vector(sa, 0, ca).Normalize();
             
                     var camera = new Camera(
                         middle - dir * dist,
