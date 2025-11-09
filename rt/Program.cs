@@ -42,7 +42,7 @@ namespace rt
                 
                 new Sphere(   new Vector(-25.0, -50.0,  75.0),                           25.0, Color.ORANGE),
                 
-                new CtScan("ctscan/walnut.dat", "ctscan/walnut.raw", new Vector(-5.0, -20.0, 105.0), 0.2,
+                new CtScan("ctscan/walnut.dat", "ctscan/walnut.raw", new Vector(25.0, 10.0, 135.0), 0.2,
                     new ColorMap()
                         .Add(1, 1, new Color(0.36, 0.26, 0.16, 0.1))
                         .Add(2, 2, new Color(0.87, 0.72, 0.52, 0.8))
@@ -76,7 +76,7 @@ namespace rt
                 tasks[i] = Task.Run(() =>
                 {
                     var k = ind[0];
-                    var a = (step * k) * Math.PI / 180.0;
+                    var a = -(step * k) * Math.PI / 180.0;
                     var ca =  Math.Cos(a);
                     var sa =  Math.Sin(a);
             

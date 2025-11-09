@@ -71,7 +71,7 @@ namespace rt
                     Vector right = camera.Direction ^ camera.Up;
                     right.Normalize();
                     Vector pixelPosition = camera.Position + camera.Direction * camera.ViewPlaneDistance + 
-                             right * (-x) + camera.Up * (-y);
+                        right * x + camera.Up * (-y);
                     Line ray = new Line(camera.Position, pixelPosition);
                     
                     // Find first intersection
