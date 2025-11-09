@@ -63,85 +63,63 @@ public class CtScan: Geometry
 
     public override Intersection GetIntersection(Line line, double minDist, double maxDist)
     {
-        // Check if ray intersects with the bounding box of the volume
-        double tMin = double.MaxValue;
-        double tMax = double.MinValue;
-        
-        // Calculate intersection with volume bounding box
-        for (int i = 0; i < 3; i++)
-        {
-            double rayDir = i == 0 ? line.Dx.X : (i == 1 ? line.Dx.Y : line.Dx.Z);
-            double rayOrigin = i == 0 ? line.X0.X : (i == 1 ? line.X0.Y : line.X0.Z);
-            double boxMin = i == 0 ? _v0.X : (i == 1 ? _v0.Y : _v0.Z);
-            double boxMax = i == 0 ? _v1.X : (i == 1 ? _v1.Y : _v1.Z);
-            
-            if (Math.Abs(rayDir) < 1e-8)
-            {
-                // Ray is parallel to the plane
-                if (rayOrigin < boxMin || rayOrigin > boxMax)
-                {
-                    return Intersection.NONE;
-                }
-            }
-            else
-            {
-                double t1 = (boxMin - rayOrigin) / rayDir;
-                double t2 = (boxMax - rayOrigin) / rayDir;
-                
-                if (t1 > t2)
-                {
-                    (t1, t2) = (t2, t1);
-                }
-                
-                tMin = Math.Max(tMin, t1);
-                tMax = Math.Min(tMax, t2);
-                
-                if (tMin > tMax)
-                {
-                    return Intersection.NONE;
-                }
-            }
-        }
-        
-        // Clamp to the requested distance range
-        tMin = Math.Max(tMin, minDist);
-        tMax = Math.Min(tMax, maxDist);
-        
-        if (tMin > tMax)
-        {
+        double tmin = (_v0.X - line.X0.X) / line.Dx.X;
+        double tmax = (_v1.X - line.X0.X) / line.Dx.X;
+        if (tmin > tmax) (tmin, tmax) = (tmax, tmin);
+
+        double tymin = (_v0.Y - line.X0.Y) / line.Dx.Y;
+        double tymax = (_v1.Y - line.X0.Y) / line.Dx.Y;
+        if (tymin > tymax) (tymin, tymax) = (tymax, tymin);
+
+        if ((tmin > tymax) || (tymin > tmax))
             return Intersection.NONE;
-        }
-        
-        // Ray-march through the volume
-        double stepSize = Math.Min(_thickness[0], Math.Min(_thickness[1], _thickness[2])) * _scale * 0.5;
-        double t = tMin;
-        
-        while (t <= tMax)
+
+        tmin = Math.Max(tmin, tymin);
+        tmax = Math.Min(tmax, tymax);
+
+        double tzmin = (_v0.Z - line.X0.Z) / line.Dx.Z;
+        double tzmax = (_v1.Z - line.X0.Z) / line.Dx.Z;
+        if (tzmin > tzmax) (tzmin, tzmax) = (tzmax, tzmin);
+
+        if ((tmin > tzmax) || (tzmin > tmax))
+            return Intersection.NONE;
+        tmin = Math.Max(tmin, tzmin);
+        tmax = Math.Min(tmax, tzmax);
+
+        var accumulatedColor = new Color(0, 0, 0, 0);
+        double accumulatedAlpha = 0;
+        double step = (_thickness[0] + _thickness[1] + _thickness[2]) / 3.0 * _scale;
+
+        for (double t = Math.Max(tmin, minDist); t < Math.Min(tmax, maxDist); t += step)
         {
-            Vector position = line.CoordinateToPosition(t);
-            
-            // Check if position is within volume bounds
-            if (position.X >= _v0.X && position.X <= _v1.X &&
-                position.Y >= _v0.Y && position.Y <= _v1.Y &&
-                position.Z >= _v0.Z && position.Z <= _v1.Z)
+            var pos = line.CoordinateToPosition(t);
+            var color = GetColor(pos);
+
+            if (color == Color.NONE)
+                continue;
+
+            accumulatedColor = new Color(
+                accumulatedAlpha * accumulatedColor.Red + (1 - accumulatedAlpha) * color.Red,
+                accumulatedAlpha * accumulatedColor.Green + (1 - accumulatedAlpha) * color.Green,
+                accumulatedAlpha * accumulatedColor.Blue + (1 - accumulatedAlpha) * color.Blue,
+            1.0);
+            accumulatedAlpha += (1 - accumulatedAlpha) * color.Alpha;
+
+            if (accumulatedAlpha > 0.95)
             {
-                int[] idx = GetIndexes(position);
-                ushort value = Value(idx[0], idx[1], idx[2]);
-                
-                // Check if we hit a non-zero density (assuming 0 is empty space)
-                if (value > 0)
-                {
-                    Color color = GetColor(position);
-                    Vector normal = GetNormal(position);
-                    
-                    return new Intersection(true, true, this, line, t, normal, Material.FromColor(color), color);
-                }
+                var normal = GetNormal(pos);
+                return new Intersection(true, true, this, line, t, normal, Material, accumulatedColor);
             }
-            
-            t += stepSize;
-        }
-        
-        return Intersection.NONE;
+}
+
+if (accumulatedAlpha > 0.01)
+{
+    var pos = line.CoordinateToPosition(tmax);
+    var normal = GetNormal(pos);
+    return new Intersection(true, true, this, line, tmax, normal, Material, accumulatedColor);
+}
+
+return Intersection.NONE;
     }
     
     private int[] GetIndexes(Vector v)

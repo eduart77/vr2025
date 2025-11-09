@@ -15,9 +15,9 @@ namespace rt
         public static readonly Color WHITE =   new Color(1.0, 1.0, 1.0, 1.0); 
         public static readonly Color ORANGE =  new Color(1.0, 0.5, 0.0, 1.0);
 
-        private double Red { get; } = red;
-        private double Green { get; } = green;
-        private double Blue { get; } = blue;
+        public double Red { get; } = red;
+        public double Green { get; } = green;
+        public double Blue { get; } = blue;
         public double Alpha { get; } = alpha;
 
         public Color() : this(0, 0, 0, 0)
@@ -33,7 +33,7 @@ namespace rt
             var r = (byte)Math.Min((int)Math.Ceiling(Red * 255), 255);
             var g = (byte)Math.Min((int)Math.Ceiling(Green * 255), 255);
             var b = (byte)Math.Min((int)Math.Ceiling(Blue * 255), 255);
-            //var a = (byte)Math.Min((int)Math.Ceiling(Alpha * 255), 255);
+            var a = (byte)Math.Min((int)Math.Ceiling(Alpha * 255), 255);
 
             return new SKColor(r, g, b, 255);
         }
